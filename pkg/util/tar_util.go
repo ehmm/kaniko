@@ -120,6 +120,9 @@ func (t *Tar) checkHardlink(p string, i os.FileInfo) (bool, string) {
 	linkDst := ""
 	stat := getSyscallStatT(i)
 	if stat != nil {
+		if (stat.Mode & syscall.S_IFMT) != syscall.S_IFREG {
+			return hardlink, linkDst
+		}
 		nlinks := stat.Nlink
 		if nlinks > 1 {
 			inode := stat.Ino
